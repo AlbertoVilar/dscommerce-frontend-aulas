@@ -1,5 +1,5 @@
 import "./styles.css";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ButtonInverse from "../../../components/ButtonInverse";
 import ButtonPrimary from "../../../components/ButtonPrimary";
 import ProductDetailsCard from "../../../components/ProductDetailsCard";
@@ -11,15 +11,19 @@ import { ProductDTO } from "../../../models/product";
 
 export default function ProductDetails() {
   const params = useParams();
-
- const [product, setProduct] =  useState<ProductDTO>();
+  const [product, setProduct] =  useState<ProductDTO>();
+  const navGate = useNavigate();
 
  useEffect(() => {
 
     productService.findById(Number(params.productId))
        .then(response => {
          setProduct(response.data)
+        
        })
+       .catch( () => {
+          navGate("/");
+       });
 
  },[])
 

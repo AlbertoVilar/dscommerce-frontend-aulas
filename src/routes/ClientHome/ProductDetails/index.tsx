@@ -4,16 +4,19 @@ import ButtonInverse from "../../../components/ButtonInverse";
 import ButtonPrimary from "../../../components/ButtonPrimary";
 import ProductDetailsCard from "../../../components/ProductDetailsCard";
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ProductDTO } from "../../../models/product";
 import * as productService from "../../../services/product-service";
 import * as cartService from "../../../services/cart-service";
+import { ContextCartCount } from "../../../utils/context-cart";
 
 
 export default function ProductDetails() {
   const params = useParams();
   const [product, setProduct] =  useState<ProductDTO>();
   const navgate = useNavigate();
+
+  const { setContextCartCount} = useContext(ContextCartCount);
 
  useEffect(() => {
 
@@ -32,6 +35,7 @@ export default function ProductDetails() {
 
   if (product) { // Só adiciona ao carrinho se o produto não for underfined
     cartService.addProduct(product) // Que está no useState
+    setContextCartCount(cartService.getCart().items.length)
     navgate("/cart") // Leva ao carrinho
   }
     

@@ -1,18 +1,23 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import './styles.css'
 import * as cartService from "../../../services/cart-service"
 import { OrderDTO } from '../../../models/order';
 import { Link } from 'react-router-dom';
+import { ContextCartCount } from '../../../utils/context-cart';
 
 
 export default function Cart() {
 
     const [cart, setCart] = useState<OrderDTO>(cartService.getCart())
 
+    const {setContextCartCount} = useContext(ContextCartCount);
+
     // Limpa o carrinho
     function handleClearClick() {
         cartService.clearCart();
         setCart(cartService.getCart())
+
+        setContextCartCount(cartService.getCart().items.length)
     }
 
     // Inclementa itens do carrinho
@@ -25,6 +30,8 @@ export default function Cart() {
     function handleDecreaseItem (productId: number) {
         cartService.decreaseItem(productId)
         setCart(cartService.getCart())
+
+        setContextCartCount(cartService.getCart().items.length)
     }
 
 

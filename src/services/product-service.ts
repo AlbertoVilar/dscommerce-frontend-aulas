@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import axios, { AxiosRequestConfig } from "axios";
-import { BASE_URL } from "../utils/system";
+import { requestBackEnd } from "../utils/request";
 
 
 export function findPageRequst(page: number, name: string, size = 12, sort = "name") {
@@ -8,7 +8,6 @@ export function findPageRequst(page: number, name: string, size = 12, sort = "na
     const config: AxiosRequestConfig = {
 
         method: "GET",
-        baseURL: BASE_URL,
         url: "/products",
             params : {
                 page: page,
@@ -18,10 +17,11 @@ export function findPageRequst(page: number, name: string, size = 12, sort = "na
             }
     }
 
-    return axios(config);
+    return requestBackEnd(config);
 }
 
 
 export function findById(id: Number) {
-    return axios.get(`${BASE_URL}/products/${id}`);
+    return requestBackEnd({url: `/products/${id}`});
+    
 }

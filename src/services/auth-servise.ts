@@ -7,36 +7,33 @@ import * as accessTokenRepository from "../localstorage/access-token-repository"
 
 export function loginRequest(loginData: CredentialsDTO) {
     const headers = {
-    "Content-Type": "application/x-www-form-urlencoded",
-    Authorization: "Basic " + window.btoa(CLIENT_ID + ":" + CLIENT_SECRET),
+        "Content-Type": "application/x-www-form-urlencoded",
+        Authorization: "Basic " + window.btoa(CLIENT_ID + ":" + CLIENT_SECRET),
     };
 
-   
     const data = QueryString.stringify({
-    ...loginData,
-    grant_type: "password",
+        ...loginData,
+        grant_type: "password",
     });
+
     const config: AxiosRequestConfig = {
-    method: "POST",
-    url: "/oauth/token",
-    data,
-    headers,
+        method: "POST",
+        url: "/oauth/token",
+        data,
+        headers,
     };
+
     return requestBackEnd(config);
+}
 
-   
-    }
+export function logOut() {
+    accessTokenRepository.remove();
+}
 
-    export function logOut() {
-        accessTokenRepository.remove();
-    }
+export function saveAccessToken(token: string) {
+    accessTokenRepository.save(token);
+}
 
-    export function saveAccessToken(token: string) {
-        accessTokenRepository.seve(token)
-    }
-
-    export function getAccesToken() {
-        accessTokenRepository.get();
-    }
-
-
+export function getAccessToken() {
+    return accessTokenRepository.get();
+}

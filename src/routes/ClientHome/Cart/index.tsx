@@ -69,7 +69,8 @@ export default function Cart() {
                                             R$ {item.subTotal.toFixed(2)}
                                         </div>
                                     </div>
-                                ))}
+                                )
+                                )}
 
 
 

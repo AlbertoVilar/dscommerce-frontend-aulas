@@ -5,6 +5,7 @@ import iconAdmin from "../../assets/admin.svg";
 import * as AuthService from "../../services/auth-servise"
 import { useContext } from "react";
 import { ContextToken } from "../../utils/contex-token";
+import LoggedUser from "../LoggedUser";
 
 export default function HeaderClient() {
 
@@ -18,10 +19,10 @@ export default function HeaderClient() {
         </Link>
         <div className="dsc-navbar-right">
           <div className="dsc-menu-items-container">
-           
-            {  
-            contextTokenPayload &&
-            AuthService.hasAnyRoles(['ROLE_ADMIN']) &&            
+
+            {
+              contextTokenPayload &&
+              AuthService.hasAnyRoles(['ROLE_ADMIN']) &&
               <Link to="/admin">
                 <div className="dsc-menu-item">
                   <img src={iconAdmin} alt="Admin" />
@@ -34,9 +35,8 @@ export default function HeaderClient() {
                 <CartIcon />
               </div>
             </Link>
-
           </div>
-          <Link to='/login'>Entrar</Link>
+          <LoggedUser />
         </div>
       </nav>
     </header >

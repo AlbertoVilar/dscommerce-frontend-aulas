@@ -6,7 +6,7 @@ import Cart from "./routes/ClientHome/Cart";
 import { useEffect, useState } from "react";
 import { ContextCartCount } from "./utils/context-cart";
 import Login from "./routes/ClientHome/Login";
-import Admin from "./routes/Admin";
+
 import AdminHome from "./routes/Admin/AdminHome";
 import { unstable_HistoryRouter as HistoryRouter } from 'react-router-dom';
 import { history } from './utils/history';
@@ -16,6 +16,9 @@ import { ContextToken } from "./utils/contex-token";
 import * as authService from "./services/auth-servise"
 import * as cartService from "./services/cart-service"
 import Confirmation from "./routes/ClientHome/Confimation";
+import Admin from "./routes/Admin/admin";
+import ProductListing from "./routes/Admin/ProductListing";
+import ProductForm from "./routes/Admin/ProductForm";
 
 function App() {
   
@@ -35,28 +38,32 @@ function App() {
     return (
       
       <ContextToken.Provider value={{ contextTokenPayload, setContextTokenPayload }}>
-        <ContextCartCount.Provider value={{ contextCartCount, setContextCartCount }}>
-          <HistoryRouter history={history}>
-            <Routes>
-              <Route path="/" element={<ClientHome />}>
-                <Route index element={<Catalog />} />
-                <Route path="catalog" element={<Catalog />} />
-                <Route path="product-details/:productId" element={<ProductDetails />} />
-                <Route path="cart" element={<Cart />} />
-                <Route path="login" element={<Login />} />
-                <Route path="confirmation/:orderId" element={<PrivateRoute><Confirmation /></PrivateRoute>} />
-              </Route>
+      <ContextCartCount.Provider value={{ contextCartCount, setContextCartCount }}>
+        <HistoryRouter history={history}>
+          <Routes>
+            <Route path="/" element={<ClientHome />}>
+              <Route index element={<Catalog />} />
+              <Route path="catalog" element={<Catalog />} />
+              <Route path="product-details/:productId" element={<ProductDetails />} />
+              <Route path="cart" element={<Cart />} />
+              <Route path="login" element={<Login />} />
+              <Route path="confirmation/:orderId" element={<PrivateRoute><Confirmation /></PrivateRoute>} />
+            </Route>
 
-              <Route path="/admin/" element={<Admin />}>
-                <Route index element={<PrivateRoute roles={['ROLE_ADMIN']}><AdminHome /></PrivateRoute>} />
-              </Route>
+            <Route path="/admin/" element={<Admin />}>
+              <Route index element={<PrivateRoute roles={['ROLE_ADMIN']}><AdminHome /></PrivateRoute>} />
+              <Route index element={<Navigate to={"/admin/home"} />} />
+              <Route path="home" element={<AdminHome />} />
+              <Route path="products" element={<ProductListing />} />
+              <Route path="products/:productsId" element={<ProductForm />} />
+            </Route>
 
-              <Route path="*" element={<Navigate to={'/'} />} />
-            </Routes>
+            <Route path="*" element={<Navigate to={'/'} />} />
+          </Routes>
 
-          </HistoryRouter>
-        </ContextCartCount.Provider>
-      </ContextToken.Provider>
+        </HistoryRouter>
+      </ContextCartCount.Provider>
+    </ContextToken.Provider>
   );
 }
 

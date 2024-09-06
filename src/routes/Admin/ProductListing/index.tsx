@@ -4,6 +4,7 @@ import deleteIcon from "../../../assets/delete.svg"
 import * as productService from "../../../services/product-service";
 import { useEffect, useState } from "react"
 import { ProductDTO } from "../../../models/product";
+import SearchBar from "../../../components/SearchBar";
 
 type QueryParams = {
     page: number,
@@ -15,9 +16,8 @@ export default function ProductListing() {
     const [queryParams, setQueryParams] = useState<QueryParams>({
 
         page: 0,
-        name: ""
-
-    })
+        name: ""   
+     })
 
     const [products, setProducts] = useState<ProductDTO[]>([]);
     const [isLastPage, setIsLastPage] = useState(false)
@@ -32,6 +32,12 @@ export default function ProductListing() {
             })
     }, [queryParams])
 
+    function handleSearch(searchText: string) {
+
+        setProducts([])
+        setQueryParams({ ...queryParams, page: 0, name: searchText })
+      }
+
 
     return (
         <main>
@@ -42,11 +48,7 @@ export default function ProductListing() {
                     <div className="dsc-btn dsc-btn-white">Novo</div>
                 </div>
 
-                <form className="dsc-search-bar">
-                    <button type="submit">🔎︎</button>
-                    <input type="text" placeholder="Nome do produto" />
-                    <button type="reset">🗙</button>
-                </form>
+                <SearchBar onSearch={handleSearch} />
 
                 <table className="dsc-table dsc-mb20 dsc-mt20">
                     <thead>
@@ -63,11 +65,11 @@ export default function ProductListing() {
 
                         {
                             products.map(product => (
-                                <tr>
+                                <tr key={product.id}>
                                     <td className="dsc-tb576">{product.id}</td>
                                     <td><img className="dsc-product-listing-image" src={product.imgUrl} alt={product.name} /></td>
                                     <td className="dsc-tb768">R$ {product.price.toFixed(2)}</td>
-                                    <td className="dsc-txt-left">{product.description}</td>
+                                    <td className="dsc-txt-left">{product.name}</td>
                                     <td><img className="dsc-product-listing-btn" src={editIcon} alt="Editar" /></td>
                                     <td><img className="dsc-product-listing-btn" src={deleteIcon} alt="Deletar" /></td>
                                 </tr>

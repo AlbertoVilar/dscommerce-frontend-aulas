@@ -44,7 +44,7 @@ export default function Catalog() {
     setQueryParams({ ...queryParams, page: 0, name: searchText })
   }
 
-  function handleNexPageClick() {
+  function handleNextPageClick() {
 
     setQueryParams({ ...queryParams, page: queryParams.page + 1 })
   }
@@ -64,7 +64,7 @@ export default function Catalog() {
 
         {
           !isLastPage &&
-          <div onClick={handleNexPageClick}>
+          <div onClick={handleNextPageClick}>
             <ButtonNextPage />
           </div>
         }

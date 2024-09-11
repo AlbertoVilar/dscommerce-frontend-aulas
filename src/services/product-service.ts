@@ -9,12 +9,12 @@ export function findPageRequst(page: number, name: string, size = 12, sort = "na
 
         method: "GET",
         url: "/products",
-            params : {
-                page: page,
-                name: name,
-                size: size,
-                sort: sort
-            }
+        params: {
+            page: page,
+            name: name,
+            size: size,
+            sort: sort
+        }
     }
 
     return requestBackEnd(config);
@@ -22,6 +22,16 @@ export function findPageRequst(page: number, name: string, size = 12, sort = "na
 
 
 export function findById(id: Number) {
-    return requestBackEnd({url: `/products/${id}`});
-    
+    return requestBackEnd({ url: `/products/${id}` });
+
+}
+
+export function deleteById(id: Number) {
+    const config: AxiosRequestConfig = {
+        method: "DELETE",
+        url: `/products/${id}`,
+        withCredentials: true
+    }
+
+    return requestBackEnd(config);
 }

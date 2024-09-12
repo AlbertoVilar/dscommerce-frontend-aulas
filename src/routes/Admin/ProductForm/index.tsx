@@ -1,13 +1,16 @@
 import "./styles.css"
-import { Link } from "react-router-dom";
-import { useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 import * as forms from "../../../utils/forms"
 import FormInput from "../../../components/FormInput";
+import * as productService from "../../../services/product-service"
 
 export default function ProductForm() {
+    const params = useParams();
+    const productId = params.productId; // Certifique-se de usar `productId`
+    const isEditing = productId !== 'create';
 
     const [formData, setFormData] = useState<any>({
-
         name: {
             value: "",
             id: "name",
@@ -15,7 +18,6 @@ export default function ProductForm() {
             type: "text",
             placeholder: "Nome",
         },
-
         price: {
             value: "",
             id: "price",
@@ -23,7 +25,6 @@ export default function ProductForm() {
             type: "number",
             placeholder: "Preço",
         },
-
         imgUrl: {
             value: "",
             id: "imgUrl",
@@ -31,7 +32,45 @@ export default function ProductForm() {
             type: "text",
             placeholder: "Imagem",
         }
-    })
+    });
+
+    useEffect(() => {
+        console.log("Params:", params);  // Verifique os parâmetros
+
+        if (isEditing && productId) {
+            const id = Number(productId);
+            console.log("Product ID:", id);  // Verifique o ID do produto
+
+            if (!isNaN(id)) {
+                productService.findById(id)
+                    .then(response => {
+                        console.log("API Response:", response);  // Verifique a resposta da API
+                        console.log("Product Data:", response.data);  // Verifique os dados do produto
+
+                        const product = response.data;
+                        setFormData({
+                            name: {
+                                ...formData.name,
+                                value: product.name
+                            },
+                            price: {
+                                ...formData.price,
+                                value: product.price
+                            },
+                            imgUrl: {
+                                ...formData.imgUrl,
+                                value: product.imgUrl
+                            }
+                        });
+                    })
+                    .catch(error => {
+                        console.error("Erro ao buscar o produto:", error.response?.data || error.message || error);
+                    });
+            } else {
+                console.error("ID do produto inválido:", productId);
+            }
+        }
+    }, [isEditing, productId]);  // Use `productId` como dependência
 
     function handleInputChange(event: any) {
         const name = event.target.name;
@@ -67,9 +106,7 @@ export default function ProductForm() {
                                     onChange={handleInputChange}
                                 />
                             </div>
-
                         </div>
-
                         <div className="dsc-product-form-buttons">
                             <Link to={"/admin/products"}>
                                 <button type="reset" className="dsc-btn dsc-btn-white">Cancelar</button>

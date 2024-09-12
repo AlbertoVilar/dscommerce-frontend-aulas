@@ -4,6 +4,7 @@ import { CredentialsDTO } from "../../../models/auth";
 import * as authService from "../../../services/auth-servise"
 import { useNavigate } from "react-router-dom";
 import { ContextToken } from "../../../utils/contex-token";
+import FormInput from "../../../components/FormInput";
 
 export default function Login() {
 
@@ -11,30 +12,44 @@ export default function Login() {
 
     const navigate = useNavigate();
 
-    const [formData, setFormData] = useState<CredentialsDTO>({
-        username: '',
-        password: ''
-        
-        
+    const [formData, setFormData] = useState<any>({
+        username: {
+            value: "",
+            id: "username",
+            name: "username",
+            type: "text",
+            placeholder: "Email",
+            validation: function (value: string) {
+                return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(value.toLowerCase());
+            },
+            message: "Favor informar um email válido",
+        },
+        password: {
+            value: "",
+            id: "password",
+            name: "password",
+            type: "password",
+            placeholder: "Senha",
+        }
     })
-    
+
     function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
-        authService.loginRequest(formData)
-        .then(response => {
-            authService.saveAccessToken(response.data.access_token)
-            setContextTokenPayload(authService.getAccessTokenPayload())
-            navigate("/cart");
-        })
-        .catch(error => {
-            console.log("Erro no login", error)
-        })
+        authService.loginRequest({ username: formData.username.value, password: formData.password.value })
+            .then(response => {
+                authService.saveAccessToken(response.data.access_token)
+                setContextTokenPayload(authService.getAccessTokenPayload())
+                navigate("/cart");
+            })
+            .catch(error => {
+                console.log("Erro no login", error)
+            })
     }
 
-    function handleInputChange(event: any){
+    function handleInputChange(event: any) {
         const name = event.target.name;
         const value = event.target.value;
-        setFormData({...formData, [name]: value})
+        setFormData({ ...formData, [name]: { ...formData[name], value: value } })
     }
 
 
@@ -46,22 +61,17 @@ export default function Login() {
                         <h2>Login</h2>
                         <div className="dsc-form-controls-container">
                             <div>
-                                <input 
-                                    className="dsc-form-control" 
-                                    name="username"
-                                    value={formData.username}
-                                    type="text" placeholder="Email" 
+                                <FormInput
+                                    {...formData.username}
+                                    className="dsc-form-control"
                                     onChange={handleInputChange}
                                 />
-                                    <div className="dsc-form-error"></div>
+                                <div className="dsc-form-error"></div>
                             </div>
                             <div>
-                                <input 
-                                    name="password"
-                                    value={formData.password}
-                                    className="dsc-form-control" 
-                                    type="password" 
-                                    placeholder="Senha" 
+                                <FormInput
+                                    {...formData.password}
+                                    className="dsc-form-control"
                                     onChange={handleInputChange}
                                 />
                             </div>

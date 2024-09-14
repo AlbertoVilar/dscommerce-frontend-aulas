@@ -41,38 +41,39 @@ function App() {
   }, []);  // O array vazio como dependência indica que o efeito é executado apenas uma vez, após a montagem do componente
 
   return (
-      // Provedores de contexto que fornecem estado global para o aplicativo
-      <ContextToken.Provider value={{ contextTokenPayload, setContextTokenPayload }}>
-          <ContextCartCount.Provider value={{ contextCartCount, setContextCartCount }}>
-              {/* Router histórico para controle avançado da navegação */}
-              <HistoryRouter history={history}>
-                  {/* Configuração das rotas do aplicativo */}
-                  <Routes>
-                      {/* Roteamento para a parte do cliente do aplicativo */}
-                      <Route path="/" element={<ClientHome />}>
-                          <Route index element={<Catalog />} />  {/* Rota padrão para a página inicial */}
-                          <Route path="catalog" element={<Catalog />} />  {/* Rota para o catálogo */}
-                          <Route path="product-details/:productId" element={<ProductDetails />} />  {/* Rota para detalhes do produto */}
-                          <Route path="cart" element={<Cart />} />  {/* Rota para o carrinho */}
-                          <Route path="login" element={<Login />} />  {/* Rota para o login */}
-                          <Route path="confirmation/:orderId" element={<PrivateRoute><Confirmation /></PrivateRoute>} />  {/* Rota para confirmação de pedido, protegida por rota privada */}
-                      </Route>
-
-                      {/* Roteamento para a parte administrativa do aplicativo */}
-                      <Route path="/admin" element={<Admin />}>
-                          <Route index element={<PrivateRoute roles={['ROLE_ADMIN']}><AdminHome /></PrivateRoute>} />  {/* Rota padrão para a página inicial administrativa, protegida por rota privada */}
-                          <Route path="home" element={<AdminHome />} />  {/* Rota para a página inicial administrativa */}
-                          <Route path="products" element={<ProductListing />} />  {/* Rota para listar produtos */}
-                          <Route path="products/:productId" element={<ProductForm />} />  {/* Rota para o formulário de produto */}
-                      </Route>
-
-                      {/* Rota coringa para redirecionar qualquer caminho desconhecido para a página inicial */}
-                      <Route path="*" element={<Navigate to="/" />} />
-                  </Routes>
-              </HistoryRouter>
-          </ContextCartCount.Provider>
-      </ContextToken.Provider>
+    // Provedores de contexto que fornecem estado global para o aplicativo
+    <ContextToken.Provider value={{ contextTokenPayload, setContextTokenPayload }}>
+      <ContextCartCount.Provider value={{ contextCartCount, setContextCartCount }}>
+        {/* Router histórico para controle avançado da navegação */}
+        <HistoryRouter history={history}>
+          {/* Configuração das rotas do aplicativo */}
+          <Routes>
+            {/* Roteamento para a parte do cliente do aplicativo */}
+            <Route path="/" element={<ClientHome />}>
+              <Route index element={<Catalog />} />  {/* Rota padrão para a página inicial */}
+              <Route path="catalog" element={<Catalog />} />  {/* Rota para o catálogo */}
+              <Route path="product-details/:productId" element={<ProductDetails />} />  {/* Rota para detalhes do produto */}
+              <Route path="cart" element={<Cart />} />  {/* Rota para o carrinho */}
+              <Route path="login" element={<Login />} />  {/* Rota para o login */}
+              <Route path="confirmation/:orderId" element={<PrivateRoute><Confirmation /></PrivateRoute>} />  {/* Rota para confirmação de pedido, protegida por rota privada */}
+            </Route>
+  
+            {/* Roteamento para a parte administrativa do aplicativo */}
+            <Route path="/admin" element={<Admin />}>
+              <Route index element={<PrivateRoute roles={['ROLE_ADMIN']}><AdminHome /></PrivateRoute>} />  {/* Rota padrão para a página inicial administrativa, protegida por rota privada */}
+              <Route path="home" element={<AdminHome />} />  {/* Rota para a página inicial administrativa */}
+              <Route path="products" element={<ProductListing />} />  {/* Rota para listar produtos */}
+              <Route path="products/:productId" element={<ProductForm />} />  {/* Rota para o formulário de produto */}
+            </Route>
+  
+            {/* Rota coringa para redirecionar qualquer caminho desconhecido para a página inicial */}
+            <Route path="*" element={<Navigate to="/" />} />
+          </Routes>
+        </HistoryRouter>
+      </ContextCartCount.Provider>
+    </ContextToken.Provider>
   );
+
 }
 
 export default App;

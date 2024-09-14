@@ -33,44 +33,25 @@ export default function ProductForm() {
             placeholder: "Imagem",
         }
     });
-
+    
     useEffect(() => {
-        console.log("Params:", params);  // Verifique os parâmetros
-
-        if (isEditing && productId) {
-            const id = Number(productId);
-            console.log("Product ID:", id);  // Verifique o ID do produto
-
-            if (!isNaN(id)) {
-                productService.findById(id)
-                    .then(response => {
-                        console.log("API Response:", response);  // Verifique a resposta da API
-                        console.log("Product Data:", response.data);  // Verifique os dados do produto
-
-                        const product = response.data;
-                        setFormData({
-                            name: {
-                                ...formData.name,
-                                value: product.name
-                            },
-                            price: {
-                                ...formData.price,
-                                value: product.price
-                            },
-                            imgUrl: {
-                                ...formData.imgUrl,
-                                value: product.imgUrl
-                            }
-                        });
-                    })
-                    .catch(error => {
-                        console.error("Erro ao buscar o produto:", error.response?.data || error.message || error);
-                    });
-            } else {
-                console.error("ID do produto inválido:", productId);
-            }
+        // Verifica se o componente está no modo de edição
+        if (isEditing) {
+            // Faz uma chamada ao serviço para buscar os dados do produto com o ID fornecido
+            productService.findById(Number(params.productId))
+                .then(response => {
+                    // Quando a chamada é bem-sucedida, atualiza o estado do formulário com os dados do produto retornados
+                    // 'forms.updateAll' parece ser uma função que atualiza o estado do formulário com os novos dados
+                    setFormData(forms.updateAll(formData, response.data));
+                })
+                .catch(error => {
+                    // Se ocorrer um erro durante a chamada ao serviço, exibe uma mensagem de erro no console
+                    console.error("Error fetching product:", error);  // Adicione tratamento de erros
+                });
         }
-    }, [isEditing, productId]);  // Use `productId` como dependência
+    }, [isEditing, params.productId]);  // Dependências do useEffect. O efeito será executado sempre que 'isEditing' ou 'params.productId' mudarem
+    
+    
 
     function handleInputChange(event: any) {
         const name = event.target.name;

@@ -19,12 +19,18 @@ export default function ProductForm() {
             placeholder: "Nome",
         },
         price: {
-            value: "",
+            value: 0,
             id: "price",
-            name: "price",
+            name: " price ",
             type: "number",
             placeholder: "Preço",
+           
+            validation: function (value: number) {
+                return value > 0;
+            },
+            message: "Informe um preço positivo",
         },
+
         imgUrl: {
             value: "",
             id: "imgUrl",
@@ -33,9 +39,9 @@ export default function ProductForm() {
             placeholder: "Imagem",
         }
     });
-    
+
     useEffect(() => {
-        // Verifica se o componente está no modo de edição
+             // Verifica se o componente está no modo de edição
         if (isEditing) {
             // Faz uma chamada ao serviço para buscar os dados do produto com o ID fornecido
             productService.findById(Number(params.productId))
@@ -50,13 +56,13 @@ export default function ProductForm() {
                 });
         }
     }, [isEditing, params.productId]);  // Dependências do useEffect. O efeito será executado sempre que 'isEditing' ou 'params.productId' mudarem
-    
-    
+
+
 
     function handleInputChange(event: any) {
-        const name = event.target.name;
-        const value = event.target.value;
-        setFormData(forms.update(formData, name, value));
+        const dataUpdated = forms.update(formData, event.target.name, event.target.value);
+        const dataValidated = forms.validate(dataUpdated, event.target.name);
+        setFormData(dataUpdated);
     }
 
     return (

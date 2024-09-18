@@ -19,18 +19,16 @@ export default function ProductForm() {
             placeholder: "Nome",
         },
         price: {
-            value: 0,
+            value: "",
             id: "price",
-            name: " price ",
+            name: "price", // Correção aqui
             type: "number",
             placeholder: "Preço",
-           
             validation: function (value: number) {
                 return value > 0;
             },
             message: "Informe um preço positivo",
         },
-
         imgUrl: {
             value: "",
             id: "imgUrl",
@@ -41,28 +39,26 @@ export default function ProductForm() {
     });
 
     useEffect(() => {
-             // Verifica se o componente está no modo de edição
+        console.log(forms.toDirty(formData, "price"))
+        // Verifica se o componente está no modo de edição
         if (isEditing) {
-            // Faz uma chamada ao serviço para buscar os dados do produto com o ID fornecido
             productService.findById(Number(params.productId))
                 .then(response => {
-                    // Quando a chamada é bem-sucedida, atualiza o estado do formulário com os dados do produto retornados
-                    // 'forms.updateAll' parece ser uma função que atualiza o estado do formulário com os novos dados
                     setFormData(forms.updateAll(formData, response.data));
-                })
-                .catch(error => {
-                    // Se ocorrer um erro durante a chamada ao serviço, exibe uma mensagem de erro no console
-                    console.error("Error fetching product:", error);  // Adicione tratamento de erros
                 });
+
         }
-    }, [isEditing, params.productId]);  // Dependências do useEffect. O efeito será executado sempre que 'isEditing' ou 'params.productId' mudarem
-
-
+    }, []);
 
     function handleInputChange(event: any) {
         const dataUpdated = forms.update(formData, event.target.name, event.target.value);
         const dataValidated = forms.validate(dataUpdated, event.target.name);
-        setFormData(dataUpdated);
+        setFormData(dataValidated);
+    }
+
+    function handleTurnDirty(name: string) {
+        const newFormData = forms.toDirty(formData, name);
+        setFormData(newFormData);
     }
 
     return (
@@ -76,20 +72,25 @@ export default function ProductForm() {
                                 <FormInput
                                     {...formData.name}
                                     className="dsc-form-control"
+                                    onTurnDirty={handleTurnDirty}
                                     onChange={handleInputChange}
                                 />
+                                <div className="dsc-form-error">{formData.name.message}</div>
                             </div>
                             <div>
                                 <FormInput
                                     {...formData.price}
                                     className="dsc-form-control"
+                                    onTurnDirty={handleTurnDirty}
                                     onChange={handleInputChange}
                                 />
+                                <div className="dsc-form-error">{formData.price.message}</div>
                             </div>
                             <div>
                                 <FormInput
                                     {...formData.imgUrl}
                                     className="dsc-form-control"
+                                    onTurnDirty={handleTurnDirty}
                                     onChange={handleInputChange}
                                 />
                             </div>

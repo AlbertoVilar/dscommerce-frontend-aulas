@@ -249,15 +249,26 @@ nav a {
   color: var(--dsc-color-font-placeholder);
 }
 
-.dsc-input-error {
+.dsc-form-control[data-dirty="true"][data-invalid="true"] {
   border: 1px solid var(--dsc-color-error);
+}
+
+.dsc-form-control[data-dirty="true"][data-invalid="true"] ~ .dsc-form-error {
+  display: block; /* Use block para mostrar a mensagem de erro */
 }
 
 .dsc-form-error {
   color: var(--dsc-color-error);
   font-size: 12px;
   padding-left: 4px;
+  display: none; /* Inicialmente escondido */
 }
+
+/* Exibe a mensagem de erro quando o campo é inválido e sujo */
+.dsc-form-control[data-dirty="true"][data-invalid="true"] + .dsc-form-error {
+  display: block; /* Mostra a mensagem de erro quando o input é inválido */
+}
+
 
 .dsc-select:invalid {
   color: var(--dsc-color-font-placeholder);

@@ -13,24 +13,44 @@ export function toValues(inputs: any) {
     return data;
 }
 
-export function updateAll(inputs: any, newValues: any) {
-
-    const newInputs: any = {};
-    for (var name in inputs) {
-        newInputs[name] = { ...inputs[name], value: newValues[name] };
-    }
-
-    return newInputs;
-}
-
 export function validate(inputs: any, name: string) {
+    const value = inputs[name].value;
 
-    if(!inputs[name].value) {
-        return inputs;
+    // Se o valor do campo está vazio, exibe mensagem de erro
+    if (!value) {
+        return {
+            ...inputs,
+            [name]: {
+                ...inputs[name],
+                invalid: true,
+                message: "Este campo é obrigatório."
+            }
+        };
     }
 
-    const isInvalid = !inputs[name].validation(inputs[name].value);
+    // Verifica se o valor é válido
+    const isInvalid = !inputs[name].validation(value);
 
-    return{ ...inputs, [name]: { ...inputs[name]}, invalid: isInvalid.toString() };
+    return { 
+        ...inputs, 
+        [name]: { 
+            ...inputs[name], 
+            invalid: isInvalid, 
+            message: isInvalid ? inputs[name].message : ""
+        } 
+    };
 }
+
+
+
+export function toDirty(inputs: any, name: string) {
+    return { 
+        ...inputs, 
+        [name]: { 
+            ...inputs[name], 
+            dirty: true // Mudar para booleano
+        } 
+    };
+}
+
 

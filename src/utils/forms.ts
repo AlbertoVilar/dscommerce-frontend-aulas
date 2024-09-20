@@ -22,29 +22,19 @@ export function toValues(inputs: any) {
 }
 
 export function validate(inputs: any, name: string) {
-    const value = inputs[name].value;
-
     // Se o valor do campo está vazio, exibe mensagem de erro
-    if (!value) {
-        return {
-            ...inputs,
-            [name]: {
-                ...inputs[name],
-                invalid: true,
-                message: "Este campo é obrigatório."
-            }
-        };
+    if (!inputs[name].validation) {
+        return inputs;
     }
 
     // Verifica se o valor é válido
-    const isInvalid = !inputs[name].validation(value);
+    const isInvalid = !inputs[name].validation(inputs[name].value);
 
     return {
         ...inputs,
         [name]: {
-            ...inputs[name],
-            invalid: isInvalid,
-            message: isInvalid ? inputs[name].message : ""
+            ...inputs[name], // Correção aqui
+            invalid: isInvalid.toString() // Correção aqui
         }
     };
 }

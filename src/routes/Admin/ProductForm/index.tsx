@@ -98,11 +98,35 @@ export default function ProductForm() {
         setFormData(newFormData);
     }
 
+    function handleSubmit(event: any) {
+        event.preventDefault();
+    
+        // 1. Validar e marcar todos os campos como dirty
+        const formDataValidated = forms.dirtyAndValidateAll(formData);
+    
+        // 2. Atualizar o estado com os dados validados
+        setFormData(formDataValidated);
+    
+        // 3. Verificar se há erros no formulário validado
+        if (forms.hasAnyInvalid(formDataValidated)) {
+            console.log("O formulário contém erros. Corrija antes de enviar.");
+            return; // Impede o envio se houver erros
+        }
+    
+        // 4. Se não houver erros, prosseguir com o envio
+        console.log("Formulário válido! Enviando dados...", forms.toValues(formDataValidated));
+    
+        // Aqui você pode adicionar a lógica para enviar os dados, por exemplo:
+        // axios.post('/api/submit', forms.toValues(formDataValidated));
+    }
+    
+    
+
     return (
         <main>
             <section id="product-form-section" className="dsc-container">
                 <div className="dsc-product-form-container">
-                    <form className="dsc-card dsc-form">
+                    <form className="dsc-card dsc-form" onSubmit={handleSubmit}>
                         <h2>Dados do produto</h2>
                         <div className="dsc-form-controls-container">
                             <div>

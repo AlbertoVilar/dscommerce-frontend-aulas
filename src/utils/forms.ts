@@ -70,8 +70,8 @@ export function validateAll(inputs: any) {
     for (const name in inputs) {
         if (inputs[name].validation && typeof inputs[name].validation === "function") {
             const isInvalid = !inputs[name].validation(inputs[name].value);
-            newInputs[name] = { 
-                ...inputs[name], 
+            newInputs[name] = {
+                ...inputs[name],
                 invalid: isInvalid,  // Agora é booleano
                 dirty: inputs[name].dirty ?? false // Mantém dirty se já estava definido
             };

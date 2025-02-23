@@ -1,5 +1,5 @@
 import "./styles.css"
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import * as forms from "../../../utils/forms"
 import FormInput from "../../../components/FormInput";
@@ -12,6 +12,7 @@ import { selectStyles } from "../../../utils/select";
 
 export default function ProductForm() {
     const params = useParams();
+    const navigate = useNavigate();
     const productId = params.productId; // Certifique-se de usar `productId`
     const isEditing = productId !== 'create';
     const [categories, setCategories] = useState<CategoryDTO[]>([]);
@@ -66,8 +67,8 @@ export default function ProductForm() {
             validation: function (value: CategoryDTO[]) {
                 return value.length > 0;
             },
-             message: "Escolha ao menos uma categoria"
-    }   
+            message: "Escolha ao menos uma categoria"
+        }
     });
 
     useEffect(() => {
@@ -100,27 +101,42 @@ export default function ProductForm() {
 
     function handleSubmit(event: any) {
         event.preventDefault();
-    
+
         // 1. Validar e marcar todos os campos como dirty
         const formDataValidated = forms.dirtyAndValidateAll(formData);
-    
+
         // 2. Atualizar o estado com os dados validados
         setFormData(formDataValidated);
-    
+
         // 3. Verificar se há erros no formulário validado
         if (forms.hasAnyInvalid(formDataValidated)) {
             console.log("O formulário contém erros. Corrija antes de enviar.");
             return; // Impede o envio se houver erros
         }
-    
+
         // 4. Se não houver erros, prosseguir com o envio
-        console.log("Formulário válido! Enviando dados...", forms.toValues(formDataValidated));
-    
-        // Aqui você pode adicionar a lógica para enviar os dados, por exemplo:
-        // axios.post('/api/submit', forms.toValues(formDataValidated));
+const requestBody = forms.toValues(formDataValidated);
+
+if (isEditing) {
+    if (!params.productId) {
+        console.error("ID do produto não encontrado. Verifique o parâmetro da URL.");
+        return; // Impede o envio se o ID não estiver presente
     }
-    
-    
+    requestBody.id = params.productId; // Adiciona o ID ao corpo da requisição
+}
+
+console.log("Formulário válido! Enviando dados...", requestBody);
+
+productService.updateRequest(requestBody)
+    .then(() => {
+        // Navega para a lista de produtos após o sucesso
+        navigate("/admin/products");
+    })
+    .catch((error) => {
+        console.error("Erro ao enviar o formulário:", error);
+        alert("Ocorreu um erro ao enviar o formulário. Tente novamente."); // Feedback para o usuário
+    });
+    }
 
     return (
         <main>
@@ -156,23 +172,23 @@ export default function ProductForm() {
                                 />
                             </div>
                             <div>
-                                <FormSelect 
+                                <FormSelect
                                     {...formData.categories}
                                     className="dsc-form-control dsc-form-select-container"
-                                    styles= {selectStyles}
+                                    styles={selectStyles}
                                     options={categories}
                                     onChange={(obj: any) => {
-                                       const newFormData = forms.updateAndValidate(formData, "categories", obj);
-                                       setFormData(newFormData);
+                                        const newFormData = forms.updateAndValidate(formData, "categories", obj);
+                                        setFormData(newFormData);
                                     }}
                                     onTurnDirty={handleTurnDirty}
                                     isMulti
                                     getOptionLabel={(obj: any) => obj.name}
                                     getOptionValue={(obj: any) => String(obj.id)}
-                                 />
-                                 <div>
+                                />
+                                <div>
                                     <div className="dsc-form-error">{formData.categories.message}</div>
-                                 </div>
+                                </div>
                             </div>
                             <div>
                                 <FormTextArea

@@ -101,42 +101,46 @@ export default function ProductForm() {
 
     function handleSubmit(event: any) {
         event.preventDefault();
-
+    
         // 1. Validar e marcar todos os campos como dirty
         const formDataValidated = forms.dirtyAndValidateAll(formData);
-
+    
         // 2. Atualizar o estado com os dados validados
         setFormData(formDataValidated);
-
+    
         // 3. Verificar se há erros no formulário validado
         if (forms.hasAnyInvalid(formDataValidated)) {
             console.log("O formulário contém erros. Corrija antes de enviar.");
             return; // Impede o envio se houver erros
         }
-
+    
         // 4. Se não houver erros, prosseguir com o envio
-const requestBody = forms.toValues(formDataValidated);
-
-if (isEditing) {
-    if (!params.productId) {
-        console.error("ID do produto não encontrado. Verifique o parâmetro da URL.");
-        return; // Impede o envio se o ID não estiver presente
-    }
-    requestBody.id = params.productId; // Adiciona o ID ao corpo da requisição
-}
-
-console.log("Formulário válido! Enviando dados...", requestBody);
-
-productService.updateRequest(requestBody)
-    .then(() => {
-        // Navega para a lista de produtos após o sucesso
-        navigate("/admin/products");
-    })
-    .catch((error) => {
-        console.error("Erro ao enviar o formulário:", error);
-        alert("Ocorreu um erro ao enviar o formulário. Tente novamente."); // Feedback para o usuário
-    });
-    }
+        const requestBody = forms.toValues(formDataValidated);
+    
+        if (isEditing) {
+            if (!params.productId) {
+                console.error("ID do produto não encontrado. Verifique o parâmetro da URL.");
+                return; // Impede o envio se o ID não estiver presente
+            }
+            requestBody.id = params.productId; // Adiciona o ID ao corpo da requisição
+        }
+    
+        console.log("Formulário válido! Enviando dados...", requestBody);
+    
+        // Escolhe a requisição correta (POST ou PUT) com base no modo de edição
+        const request = isEditing
+            ? productService.updateRequest(requestBody)
+            : productService.insertRequest(requestBody);
+    
+        request
+            .then(() => {
+                navigate("/admin/products"); // Navega para a lista de produtos após o sucesso
+            })
+            .catch((error) => {
+                console.error("Erro ao enviar o formulário:", error);
+                alert(`Ocorreu um erro ao ${isEditing ? "atualizar" : "inserir"} o produto. Tente novamente.`);
+            });
+    }git
 
     return (
         <main>

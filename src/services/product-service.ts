@@ -49,3 +49,14 @@ export function updateRequest(obj: ProductDTO) {
     return requestBackEnd(config);
 }
 
+export function insertRequest(obj: ProductDTO) {
+    const config: AxiosRequestConfig = {
+        method: "POST", // Método POST para criar um novo produto
+        url: "/products", // Endpoint para criação de produtos (sem ID)
+        withCredentials: true, // Mantenha se precisar enviar credenciais
+        data: obj // Dados do produto a ser criado
+    };
+
+    return requestBackEnd(config);
+}
+

@@ -12,6 +12,8 @@ export default function Login() {
 
     const navigate = useNavigate();
 
+    const [submitResponseFail, setsubmitResponseFail] = useState(false);
+
     const [formData, setFormData] = useState<any>({
         username: {
             value: "",
@@ -35,20 +37,29 @@ export default function Login() {
 
     function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
+
+        setsubmitResponseFail(false)
+        const formDataValidated = forms.dirtyAndValidateAll(formData);
+
+        if (forms.hasAnyInvalid(formDataValidated)) {
+
+            setFormData(formDataValidated);
+            return;
+        }
         authService.loginRequest(forms.toValues(formData))
             .then(response => {
                 authService.saveAccessToken(response.data.access_token)
                 setContextTokenPayload(authService.getAccessTokenPayload())
                 navigate("/cart");
             })
-            .catch(error => {
-                console.log("Erro no login", error)
+            .catch(() => {
+                setsubmitResponseFail(true)
             })
     }
 
     function handleInputChange(event: any) {
         const result = forms.updateAndValidate(formData, event.target.name, event.target.value);
-             setFormData(result);
+        setFormData(result);
     }
 
     function handleTurnDirty(name: string) {
@@ -82,6 +93,13 @@ export default function Login() {
                                 />
                             </div>
                         </div>
+
+                        {
+                            submitResponseFail &&
+                            <div className="dsc-form-global-error">
+                                Usuário ou senha inválidos
+                            </div>
+                        }
 
                         <div className="dsc-login-form-buttons dsc-mt20">
                             <button type="submit" className="dsc-btn dsc-btn-blue">Entrar</button>

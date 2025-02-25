@@ -95,8 +95,8 @@ export default function ProductForm() {
     }
 
     function handleTurnDirty(name: string) {
-       //onst newFormData = forms.dirtyAndValidate(formData, name);
-       //etFormData(newFormData);
+       const newFormData = forms.dirtyAndValidate(formData, name);
+       setFormData(newFormData);
     }
 
     function handleSubmit(event: any) {
@@ -104,13 +104,12 @@ export default function ProductForm() {
 
         // 1. Validar e marcar todos os campos como dirty
         const formDataValidated = forms.dirtyAndValidateAll(formData);
-
-
-        if (forms.hasAnyInvalid(formDataValidated)) {
-            // 2. Atualizar o estado com os dados validados
-           //etFormData(formDataValidated);
-           //eturn; // Impede o envio se houver erros
-        }
+       
+               if (forms.hasAnyInvalid(formDataValidated)) {
+       
+                   setFormData(formDataValidated);
+                   return;
+               }
 
         // 4. Se não houver erros, prosseguir com o envio
         const requestBody = forms.toValues(formData);

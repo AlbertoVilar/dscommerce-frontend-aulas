@@ -264,6 +264,17 @@ nav a {
   display: none; /* Inicialmente escondido */
 }
 
+.dsc-form-global-error {
+  border: 1px solid var(--dsc-color-error);
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 5px 10px;
+  font-style: 12px;
+  color: var(--dsc-color-error);
+  border-radius: 5px;
+}
+
 /* Exibe a mensagem de erro quando o campo é inválido e sujo */
 .dsc-form-control[data-dirty="true"][data-invalid="true"] + .dsc-form-error {
   display: block; /* Mostra a mensagem de erro quando o input é inválido */
